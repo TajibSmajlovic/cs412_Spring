@@ -16,5 +16,6 @@ app.get('/users', (req, res) => {
 		  })
 })
 app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/newRoute', (req, res) => res.send('New Route!'))
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
