@@ -22,7 +22,13 @@ class RESTApp extends Component {
   render () {
     return (
       <div>
-       <button className='button' onClick={this.handleClick}>Click Me</button>
+       <button className='button' onClick={this.handleClick}>Show all users</button>
+       <br/>
+       <form action={this.handleSubmit}>
+          <label htmlFor="name">Enter your name</label>
+          <input type="text" name="name" />
+          <input type="submit" name="Filter by name" />
+       </form>
        <table>
         <thead>
          <tr>
