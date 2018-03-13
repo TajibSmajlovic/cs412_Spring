@@ -31,7 +31,7 @@ app.get('/users', (req, res) => {
         message: err.message}});
 		  })
 })
-
+// this is our new route:
 app.get('/userByName', (req, res) => {
   //console.log(req.query.name)
   User.byName(req.query.name)
