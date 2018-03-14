@@ -11,7 +11,8 @@ class RESTApp extends Component {
     }
 
     this.handleClick = this.handleClick.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNameQuery = this.handleNameQuery.bind(this);
+    this.handleEmailQuery = this.handleEmailQuery.bind(this);
     this.handleClear = this.handleClear.bind(this);
   }
 
@@ -25,7 +26,7 @@ class RESTApp extends Component {
     this.setState({users: []  })
   }
 
-  handleSubmit(event) {
+  handleNameQuery(event) {
    event.preventDefault();
    let name = event.target.name.value
    console.log(name)
@@ -33,15 +34,30 @@ class RESTApp extends Component {
      .then(response => this.setState({users: response.data}))
  }
 
+ handleEmailQuery(event) {
+  event.preventDefault();
+  let email = event.target.email.value
+  console.log(email)
+ axios.get('http://localhost:3000/userByEmail?email='+ email, { "email" : email } )
+    .then(response => this.setState({users: response.data}))
+}
+
+
+
   render () {
     return (
       <div>
        <button className='button' onClick={this.handleClick}>Show all users</button>
        <br/>
-       <form onSubmit={this.handleSubmit}>
+       <form onSubmit={this.handleNameQuery}>
          <label htmlFor="name">Enter the name to search</label>
          <input id="name" type="text" name="name" />
          <input type="submit" name="Filter by name" />
+       </form>
+       <form onSubmit={this.handleEmailQuery}>
+         <label htmlFor="name">Enter the email to search</label>
+         <input id="email" type="text" email="email" />
+         <input type="submit" name="Filter by email" />
        </form>
        <table>
         <thead>
