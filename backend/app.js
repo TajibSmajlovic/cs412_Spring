@@ -32,6 +32,7 @@ app.get('/users', (req, res) => {
 		  })
 })
 
+<<<<<<< HEAD
 app.get('/userByName', (req, res) => {
   //console.log(req.query.name)
   User.byName(req.query.name)
@@ -45,6 +46,22 @@ app.get('/userByName', (req, res) => {
         message: err.message}});
 		  })
 })
+=======
+>>>>>>> 1f2e8c1fe9ab27bf8af553d1fbecc6c77c127613
 app.get('/', (req, res) => res.send('Hello World!'))
+
+app.get('/userByName', (req, res) => {
+  console.log(req.query.name)
+	User.byName(req.query.name)
+		.then(function (users) {
+		  res.status(200)
+			.json(users)
+		})
+		.catch(function (err) {
+			console.log(err)
+			res.status(500).json({error: true, data: {error: err,
+        message: err.message}});
+		  })
+})
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))

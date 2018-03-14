@@ -36,12 +36,18 @@ class RESTApp extends Component {
   render () {
     return (
       <div>
+<<<<<<< HEAD
        <button className='button' onClick={this.handleClick}>Show all users</button>
        <br/>
        <form onSubmit={this.handleSubmit}>
          <label htmlFor="name">Enter the name to search</label>
          <input id="name" type="text" name="name" />
          <input type="submit" name="Filter by name" />
+=======
+       <button className='button' onClick={this.handleClick}>View all</button>
+       <form action="http://localhost:3000/userByName"> Search:
+       <input type="text" name="name"></input>
+>>>>>>> 1f2e8c1fe9ab27bf8af553d1fbecc6c77c127613
        </form>
        <table>
         <thead>
