@@ -51,6 +51,7 @@ class RESTApp extends Component {
             .then(response => this.setState({users: response.data}))
     }
 
+
     render() {
         return (
             <div>
@@ -63,6 +64,10 @@ class RESTApp extends Component {
                            value="Filter user"/>
                     <input onClick={this.handleClick2} id="button2" type="submit" name="FilterEmail"
                            value="Filter email"/>
+                    <br/>
+                    <p>
+                    <input onClick={this.handleClear} id="button3" type="submit" name="Clear" value="Clear Data"/>
+                    </p>
                 </form>
                 <table>
                     <thead>
