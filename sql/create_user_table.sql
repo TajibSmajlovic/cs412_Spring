@@ -11,4 +11,4 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE public."User"
-    OWNER to iuslab;
+    OWNER to postgres;

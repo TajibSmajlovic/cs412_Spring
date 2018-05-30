@@ -1,4 +1,5 @@
 CREATE TABLE "public"."tasks" (
+    "addr_140" character varying,
     "id" serial,
     "name" character varying,
     "description" character varying,
@@ -7,4 +8,4 @@ CREATE TABLE "public"."tasks" (
 );
 
 ALTER TABLE public."tasks"
-    OWNER to iuslab;
+    OWNER to postgres;
