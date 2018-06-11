@@ -1,13 +1,22 @@
 let bookshelf = require('./db')
-class User extends bookshelf.model.Model {
-  get tableName () {
-    return 'User'
-  }
-  static all () {
-    return this.forge().fetchAll()
-  }
-  static byName(name) {
-    return this.forge().query({where:{ 'User.name': name }}).fetchAll()
+let Task = require('./task')
+
+const User = bookshelf.model.Model.extend({
+  tableName: 'User',
+  tasks: function(){
+    return this.hasMany(Task, ['user']);
+},
+}, {
+  byId: function (id) {
+    return this.forge().query({where:{ 'id': id }}).fetch({withRelated: [ 'tasks']})
+  },
+  all:  function() {
+    return this.forge().fetchAll({withRelated: [ 'tasks']})
+  },
+  byName: function (name) {
+    return this.forge().query({where:{ 'User.name': name }}).fetchAll({withRelated: [ 'tasks']})
   }
 }
+)
+
 module.exports = User
