@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-//import './App.css'
 import Header from './Header'
 import axios from 'axios'
+import { Button, Form, Table, Container } from 'semantic-ui-react'
+import { Grid, Image } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { userActions } from '../actions'
 
 class UserGrid extends Component {
-  constructor () {
+  constructor (props) {
     super()
     this.state = {
       users: []
     }
+    this.props = props
+    console.log(props)
 
     this.handleClick = this.handleClick.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,9 +23,7 @@ class UserGrid extends Component {
   }
 
   handleClick () {
-    axios.get('http://localhost:3000/users')
-        .then(response => this.setState({users: response.data}))
-        //.then(response => console.log(response))
+    this.props.actions.fetchUsers().then(response => this.setState({users: response.data}))
   }
 
   handleClear () {
@@ -36,40 +40,47 @@ class UserGrid extends Component {
 
   render () {
     return (
-      <div>
+      <Container>
       <Header />
-       <button className='button' onClick={this.handleClick}>Show all users</button>
+       <Button primary className='button' onClick={this.handleClick}>Show all users</Button>
+       <Button secondary><Link to={'/user/create'}>Create New User</Link></Button>
+       <br/><br/>
+       <Form onSubmit={this.handleSubmit}>
+        <Form.Field>
+          <label htmlFor="name">Enter the name to search</label>
+          <input id="name" type="text" name="name" />
+        </Form.Field>
+        <Button type='submit'>Filter by name</Button>
+       </Form>
        <br/>
-       <form onSubmit={this.handleSubmit}>
-         <label htmlFor="name">Enter the name to search</label>
-         <input id="name" type="text" name="name" />
-         <input type="submit" name="Filter by name" />
-       </form>
-       <table>
-        <thead>
-         <tr>
-          <th>Id</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Action</th>
-         </tr>
-        </thead>
-        <tbody>
-         { this.state.users.map((user, key) => {
+       <Grid columns = {5} divided>
+  { this.props.users.map((user, key) => {
                    return (
-                      <tr key={key}>
-                        <td>{user.id}</td>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td><Link to={'/user/'+user.id}>edit</Link></td>
-                      </tr>
+    <Grid.Row>
+      <Grid.Column>{user.id}</Grid.Column>
+      <Grid.Column>{user.name}</Grid.Column>
+      <Grid.Column>{user.email}</Grid.Column>
+      <Grid.Column>{user.token}</Grid.Column>
+      <Grid.Column color = 'violet'><Link to={'/user/edit/'+user.id}>edit</Link></Grid.Column>
+    </Grid.Row>
                     )
                    })
          }
-         </tbody>
-        </table>
-       </div>
+    </Grid>
+       </Container>
     )
   }
 }
-export default UserGrid
+const mapStateToProps = ({user}) => user
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: bindActionCreators(
+      Object.assign(
+        {},
+        userActions
+      ),
+      dispatch
+    )
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(UserGrid)

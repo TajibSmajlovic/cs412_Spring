@@ -5,7 +5,7 @@ import AppHeader from './Header'
 import { Button, Form, Container, Header, Message } from 'semantic-ui-react'
 
 
-class UserDetail extends Component {
+class SignupPage extends Component {
   constructor () {
     super()
     this.state = {
@@ -18,26 +18,8 @@ class UserDetail extends Component {
       errorEmail: '',
       errorPassword: ''
     }
-    this.getUserById = this.getUserById.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.removeUserById = this.removeUserById.bind(this)
-  }
-  componentWillMount () {
-    if(this.props.match.params.type == 'edit') {
-      this.getUserById(this.props.match.params.userId)
-    }
-  }
-  getUserById (userId) {
-    axios.get('http://localhost:3000/userById?id='+userId)
-        .then(response => this.setState({user: response.data}))
-        //.then(response => console.log(response))
-  }
-  removeUserById (e,userId) {
-    e.preventDefault()
-  	e.stopPropagation()
-    axios.get('http://localhost:3000/user/delete?id='+userId)
-        .then(this.props.history.push('/users'))
   }
 
   validateFields(name, email, password){
@@ -50,7 +32,6 @@ class UserDetail extends Component {
       this.setState({errorPassword:'Password must be larger then 4 chars'})
       hasErrors = true
     }
-
     let regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let validateEmail= regex.test(email)
     if(!validateEmail){
@@ -68,20 +49,11 @@ class UserDetail extends Component {
 
     let hasErrors = this.validateFields(name,email,password)
     if(!hasErrors){
-    if(this.props.match.params.type == 'edit') {
-      axios.post('http://localhost:3000/user/update', {user: {
-        'id': this.props.match.params.userId,
-        'name': name,
-        'email': email,
-        'password': password
-      }}).then(response => this.setState({user: response.data}))
-    } else {
       axios.post('http://localhost:3000/user/create', {user: {
         'name': name,
         'email': email,
         'password': password
-      }}).then(response => this.setState({user: response.data}))
-    }
+      }}).then(response => this.props.history.push("/?login=true"))
   }
   }
   handleChange(event,field) {
@@ -103,13 +75,13 @@ class UserDetail extends Component {
           }});
         break;
       case 'password':
-        this.setState(
-          {user: {
-            name:  this.state.user.name,
-            email: this.state.user.email,
-            password: event.target.value
-          }});
-        break;
+          this.setState(
+            {user: {
+              name:  this.state.user.name,
+              email: this.state.user.email,
+              password: event.target.value
+            }});
+          break;
       default:
       this.setState(
         {user: {
@@ -161,16 +133,15 @@ class UserDetail extends Component {
           { this.state.errorPassword &&
            <Message
            color='red'
-             header="Password field error"
+             header="Passford field error"
              content={this.state.errorPassword }
            />
           }
           </Form.Field>
-          <Button primary type='submit'>Submit</Button>
-          <Button secondary className='button' onClick={(e) => this.removeUserById(e, this.state.user.id)}>Remove user</Button>
-         </Form>
+          <Button primary type='submit'>Signup</Button>
+          </Form>
          </Container>
      )
    }
  }
- export default UserDetail
+ export default SignupPage

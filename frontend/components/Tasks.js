@@ -2,24 +2,39 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 //import './App.css'
 import Header from './Header'
+import { Button, Form, Table, Container,  Checkbox } from 'semantic-ui-react'
 import axios from 'axios'
+import { Feed, Icon } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { taskActions } from '../actions'
 
 class TasksComponent extends Component {
-  constructor () {
+  constructor (props) {
     super()
     this.state = {
       tasks: []
     }
 
+    this.props = props
+    console.log(props)
+
     this.handleClick = this.handleClick.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleClearClick=  this.handleClearClick.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.actions.fetchTasksByUserId(this.props.loginProps.user.id)
   }
 
   handleClick () {
-    axios.get('http://localhost:3000/tasks')
-        .then(response => this.setState({tasks: response.data}))
-        //.then(response => console.log(response))
+    this.props.actions.fetchAllTasks()
+  }
+
+  handleClearClick () {
+    this.props.actions.clearTasks()
   }
 
   handleClear () {
@@ -40,45 +55,70 @@ class TasksComponent extends Component {
    .then(response => this.setState({tasks: response.data}))
   }
 }
-
   render () {
     return (
-      <div>
+      <Container>
       <Header />
-       <button className='button' onClick={this.handleClick}>Show all tasks</button>
-       <br/>
-       <form onSubmit={this.handleSubmit}>
+      <Button primary className='button' onClick={this.handleClick}>Show all tasks</Button>
+      <Button secondary className='button' onClick={this.handleClearClick}>Clear all tasks</Button>
+      <br/><br/>
+      <Form onSubmit={this.handleSubmit}>
+       <Form.Field>
          <label htmlFor="name">Enter the name to search</label>
          <input id="name" type="text" name="name" />
+       </Form.Field>
+       <Form.Field>
          <label htmlFor="status">Enter the status to search</label>
          <input id="status" type="text" name="status" />
-         <input type="submit" name="Filter by name and status" />
-       </form>
-       <table>
-        <thead>
-         <tr>
-          <th>Id</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Action</th>
-         </tr>
-        </thead>
-        <tbody>
-         { this.state.tasks.map((task, key) => {
+       </Form.Field>
+       <Button type='submit'>Filter by name and status</Button>
+      </Form>
+      <br/>
+      <Feed>
+    { this.props.task.tasks.map((task, key) => {
                    return (
-                      <tr key={key}>
-                        <td>{task.id}</td>
-                        <td>{task.name}</td>
-                        <td>{task.email}</td>
-                        <td><Link to={'/task/'+task.id}>edit</Link></td>
-                      </tr>
+                      <Feed.Event key = {key}>
+                        <Feed.Label>
+                          <img src='/assets/images/avatar/small/elliot.jpg' />
+                        </Feed.Label>
+                        <Feed.Content>
+          <Feed.Summary>{task.description}
+          <Feed.User>{task.status}</Feed.User>
+             {task.addr_174}
+          <Feed.Date>{task.name}</Feed.Date>
+        </Feed.Summary>
+        <Feed.Meta>
+          <Feed.Like>
+            <Icon name='like' />
+            4 Likes
+          </Feed.Like>
+        </Feed.Meta>
+      </Feed.Content>
+    </Feed.Event>
                     )
                    })
          }
-         </tbody>
-        </table>
-       </div>
+     </Feed>
+       </Container>
     )
   }
 }
-export default TasksComponent
+function mapStateToProps (state) {
+  return {
+    user: state.user,
+    loginProps: state.loginProps,
+    task: state.task
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: bindActionCreators(
+      Object.assign(
+        {},
+        taskActions
+      ),
+      dispatch
+    )
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TasksComponent)
